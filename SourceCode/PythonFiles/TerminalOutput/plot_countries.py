@@ -9,7 +9,7 @@ def plot_countries(data, doc_id):
     # Count occurrences of each country code
     country_count = Counter(filtered_data)
     # Create a histogram for country codes
-    create_histogram(country_count.keys(), country_count.values(), 'Histogram of Country Codes', 'Country Code')
+    create_histogram(country_count, 'Histogram of Country Codes', 'Country Code')
 
 # This function will use the pycountry_convert library to map country codes to continent names
 def map_country_to_continent(country_code):
@@ -29,5 +29,5 @@ def plot_continents(data, doc_id):
     # Count occurrences of each continent
     continent_count = Counter(continent_data)
     # Create a histogram for continents
-    create_histogram(continent_count.keys(), continent_count.values(), 'Histogram of Continents', 'Continent', color='darkgreen')
+    create_histogram(continent_count, 'Histogram of Continents', 'Continent', color='darkgreen')
 
