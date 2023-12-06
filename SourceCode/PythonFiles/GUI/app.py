@@ -6,6 +6,7 @@ import numpy as np
 from card_num import get_unique_visitors_count, get_unique_documents_count, average_reading_time_per_document, total_visits_count
 from graph_data import plot_countries
 import json
+import mplcursors
 
 # Initialize main window for the dashboard
 root = tk.Tk()
@@ -56,7 +57,14 @@ def create_matplotlib_chart(parent, title, x, y):
     plot = fig.add_subplot(111)
 
     # Plot the data
-    plot.plot(x, y)
+    plot.bar(x, y)
+
+    #hide the x-ticks
+    plot.set_xticks([])
+
+     # Use mplcursors to add interactive hover tooltips to the bars
+    cursor = mplcursors.cursor(plot, hover=True)
+    cursor.connect("add", lambda sel: sel.annotation.set_text(list(x)[sel.target.index]))
 
     # Create the canvas and add it to the Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=container)
@@ -134,9 +142,11 @@ def place_tables(parent):
 
 data = []
 try:
-    with open('../../../Dataset/build_dataset.txt') as f:
+    with open('Dataset/build_dataset.txt') as f:
         data = f.readlines()
     data = [json.loads(x.strip()) for x in data]
+    #print top 10 vals 
+    print(data[0])
 except Exception as e:
     print('Error: ', e)
 
