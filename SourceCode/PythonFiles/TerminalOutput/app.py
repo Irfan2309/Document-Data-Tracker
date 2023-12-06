@@ -20,23 +20,15 @@ def handle_task_3a(data):
      # Get browser counts
     browser_counts = Counter(get_all_browsers(data))
 
-    # Sort and unpack for plotting
-    sorted_browser_counts = sorted(browser_counts.items(), key=lambda x: x[1], reverse=True)
-    browsers, counts = zip(*sorted_browser_counts)
-
-    # Print results and create histogra,
-    create_histogram(browsers, counts, 'Browser Histogram', 'Browser')
+    #plot 
+    create_histogram(browser_counts, 'Browser Histogram', 'Browser')
 
 def handle_task_3b(data):
     # Get browser counts
-    browser_counts = Counter(get_browser(data))
-
-    # Sort and unpack for plotting
-    sorted_browser_counts = sorted(browser_counts.items(), key=lambda x: x[1], reverse=True)
-    browsers, counts = zip(*sorted_browser_counts)
+    browser_counts = get_browser(data)
 
     # Print results and create histogra,
-    create_histogram(browsers, counts, 'Browser Histogram', 'Browser')
+    create_histogram(browser_counts, 'Browser Histogram', 'Browser')
 
 def handle_task_4(data):
     top_readers = user_reader_time(data)

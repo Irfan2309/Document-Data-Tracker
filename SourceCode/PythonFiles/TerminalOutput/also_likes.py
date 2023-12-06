@@ -71,9 +71,10 @@ def generate_graph(data, doc_uuid, visitor_uuid = None):
 
     # Highlight the input document and visitor
     mainDocId = doc_uuid[-4:]
-    mainVisitorId = visitor_uuid[-4:]
     dot.node(mainDocId, mainDocId, style='filled', fillcolor='green')
+    
     if visitor_uuid:
+        mainVisitorId = visitor_uuid[-4:]
         dot.attr('node', shape='box')
         dot.node(mainVisitorId, mainVisitorId, style='filled', fillcolor='green')
         dot.attr('node', shape='ellipse')
