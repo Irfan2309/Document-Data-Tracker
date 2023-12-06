@@ -3,13 +3,13 @@ import pycountry_convert as pc
 from collections import Counter
 
 # Function to plot countries for each document
-def plot_countries(doc_id, data):
+def plot_countries(data, doc_id):
     # Filter views for the specific document and check if 'env_doc_id' exists in the record
     filtered_data = [entry['visitor_country'] for entry in data if 'env_doc_id' in entry and entry['env_doc_id'] == doc_id]
     # Count occurrences of each country code
     country_count = Counter(filtered_data)
     # Create a histogram for country codes
-    create_histogram(country_count, 'Histogram of Country Codes', 'Country Code')
+    create_histogram(country_count.keys(), country_count.values(), 'Histogram of Country Codes', 'Country Code')
 
 # This function will use the pycountry_convert library to map country codes to continent names
 def map_country_to_continent(country_code):
@@ -19,11 +19,9 @@ def map_country_to_continent(country_code):
         return continent_name
     except:
         # If the country code is not found, return 'Unknown'
-        return 'Unknown'
-    
+        return 'Unknown'  
 
-
-def plot_continents(doc_id,data):
+def plot_continents(data, doc_id):
     # Filter views for the specific document and check if 'env_doc_id' exists in the record
     filtered_data = [entry['visitor_country'] for entry in data if 'env_doc_id' in entry and entry['env_doc_id'] == doc_id]
     # Map country codes to continents
@@ -31,5 +29,5 @@ def plot_continents(doc_id,data):
     # Count occurrences of each continent
     continent_count = Counter(continent_data)
     # Create a histogram for continents
-    create_histogram(continent_count, 'Histogram of Continents', 'Continent', color='darkgreen')
+    create_histogram(continent_count.keys(), continent_count.values(), 'Histogram of Continents', 'Continent', color='darkgreen')
 

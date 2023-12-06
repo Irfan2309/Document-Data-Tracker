@@ -1,23 +1,42 @@
 # Importing the dataset
 import argparse
-from plot_browser import plot_browser
+from plot_browser import get_browser, get_all_browsers
 import matplotlib.pyplot as plt
 import json
 from plot_reader_time import user_reader_time
-# from plot_countries import plot_countries
+from helper_functions import create_histogram
+from collections import Counter
+from plot_countries import plot_countries, plot_continents
+from also_likes import also_likes
 
-def handle_task_2a():
-    print('Task 2a')
+def handle_task_2a(data, doc_uuid):
+    plot_countries(data, doc_uuid)
 
-def handle_task_2b():
-    print('Task 2b')
+def handle_task_2b(data, doc_uuid):
+    plot_continents(data, doc_uuid)
 
-def handle_task_3a():
-    print('Task 3a')
+
+def handle_task_3a(data):
+     # Get browser counts
+    browser_counts = Counter(get_all_browsers(data))
+
+    # Sort and unpack for plotting
+    sorted_browser_counts = sorted(browser_counts.items(), key=lambda x: x[1], reverse=True)
+    browsers, counts = zip(*sorted_browser_counts)
+
+    # Print results and create histogra,
+    create_histogram(browsers, counts, 'Browser Histogram', 'Browser')
 
 def handle_task_3b(data):
-    print('Task 3b')
-    plot_browser(data)
+    # Get browser counts
+    browser_counts = Counter(get_browser(data))
+
+    # Sort and unpack for plotting
+    sorted_browser_counts = sorted(browser_counts.items(), key=lambda x: x[1], reverse=True)
+    browsers, counts = zip(*sorted_browser_counts)
+
+    # Print results and create histogra,
+    create_histogram(browsers, counts, 'Browser Histogram', 'Browser')
 
 def handle_task_4(data):
     top_readers = user_reader_time(data)
@@ -31,8 +50,17 @@ def handle_task_4(data):
     print("=======================================\n\n")
 
 
-def handle_task_5d():
-    print('Task 5d')
+def handle_task_5d(data, doc_uuid, visitor_uuid = None, sorting_function=None):
+    likes = also_likes(data, doc_uuid, visitor_uuid = None, sorting_function=None)
+    print("\n\n==============================================")
+    print("=   Top 10 Documents also Read by The Visitors   =")
+    print("==================================================")
+    print("=       Document ID      =   Number of Readers   =")
+    print("==================================================")
+    for i in range(10):
+        print("=  {a:16s}   ={p:9d}      =".format(a=likes[i][0], p = likes[i][1]['count']) )
+    print("==================================================\n\n")
+
 
 def handle_task_6():
     print('Task 6')
@@ -62,17 +90,17 @@ def handle_file(file_name):
 
 def handle_tasks(task_id = None, data = None, user_uuid = None, doc_uuid = None):
     if task_id == '2a':
-        handle_task_2a()
+        handle_task_2a(data, doc_uuid)
     elif task_id == '2b':
-        handle_task_2b()
+        handle_task_2b(data, doc_uuid)
     elif task_id == '3a':
-        handle_task_3a()
+        handle_task_3a(data)
     elif task_id == '3b':
         handle_task_3b(data)
     elif task_id == '4':
         handle_task_4(data)
     elif task_id == '5d':
-        handle_task_5d()
+        handle_task_5d(data, doc_uuid, visitor_uuid = None, sorting_function=None)
     elif task_id == '6':
         handle_task_6()
     elif task_id == '7':

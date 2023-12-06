@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 from collections import Counter
 from user_agents import parse
+from helper_functions import create_histogram
 
 # Function to get the browser from the user agent
 def get_browser(data):
+     
     browsers = []
     for record in data:
         if 'visitor_useragent' in record:
@@ -16,15 +18,13 @@ def get_browser(data):
             #trim whitespace
             browser_family = browser_family.strip()
             browsers.append(browser_family)
-        return browsers
+    return browsers
 
-def plot_browser(data):
-    # Get browser counts
-    browser_counts = Counter(get_browser(data))
-
-    # Sort and unpack for plotting
-    sorted_browser_counts = sorted(browser_counts.items(), key=lambda x: x[1], reverse=True)
-    browsers, counts = zip(*sorted_browser_counts)
-
-    # CREATE THINGIY HEEREREEEEE
-    #create_histogram(browsers, counts, 'Browser Histogram', 'Browser')
+def get_all_browsers(data):
+    browsers= []
+    for record in data: 
+        #get entire visitor_useragent
+        user_agent = record['visitor_useragent']
+        #plot all browsers
+        browsers.append(user_agent)
+    return browsers    

@@ -29,7 +29,7 @@ def get_document_by_readers(data, visitor_uuid):
     return all_docs
 
 # Get the top 10 documents that are read by the readers who also read the document
-def also_likes(data, doc_uuid, sorting_function=None):
+def also_likes(data, doc_uuid, visitor_uuid = None, sorting_function=None):
 
     # If the sorting function is not provided, then use the default sorting function
     if sorting_function is None:
@@ -64,5 +64,43 @@ def also_likes(data, doc_uuid, sorting_function=None):
 
     # Return the top 10 documents
     return sorted_docs[:10]
+
+def generate_graph(data, doc_uuid, visitor_uuid = None):
+    # Create a Digraph object
+    dot = Digraph(comment='Also Likes Graph')
+
+    # Highlight the input document and visitor
+    mainDocId = doc_uuid[-4:]
+    mainVisitorId = visitor_uuid[-4:]
+    dot.node(mainDocId, mainDocId, style='filled', fillcolor='green')
+    if visitor_uuid:
+        dot.attr('node', shape='box')
+        dot.node(mainVisitorId, mainVisitorId, style='filled', fillcolor='green')
+        dot.attr('node', shape='ellipse')
+
+    # Get the list of "also likes" documents using the also_likes function
+    also_likes_docs = also_likes(data, doc_uuid)
+    
+    # For each "also likes" document, get the readers and create edges
+    for doc, info in also_likes_docs:
+
+        docId = doc[-4:]
+        # Add the document node
+        dot.node(docId, docId)
+
+        readers = info['readers']
+
+        for reader in readers:
+            readerId = reader[-4:]
+            # Add the reader node
+            dot.attr('node', shape='box')
+            dot.node(readerId, readerId)
+            dot.attr('node', shape='ellipse')
+            # Add an edge from reader to the document
+            dot.edge(readerId, docId)
+
+    # Generate and save the graph
+    print(dot.source) 
+    dot.render('also_likes_graph', format='png', cleanup=True)
 
 
