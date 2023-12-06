@@ -4,7 +4,6 @@ from user_agents import parse
 
 # Function to get the browser from the user agent
 def get_browser(data):
-     
     browsers = []
     for record in data:
         if 'visitor_useragent' in record:
@@ -27,10 +26,5 @@ def plot_browser(data):
     sorted_browser_counts = sorted(browser_counts.items(), key=lambda x: x[1], reverse=True)
     browsers, counts = zip(*sorted_browser_counts)
 
-    # Print results and create histogra,
-
-
-    #siodubhsdhnbodizndzphbidfphbdpbin
-    #sonbidnbofsnbpdfnfonvdopdb,a[
     # CREATE THINGIY HEEREREEEEE
     #create_histogram(browsers, counts, 'Browser Histogram', 'Browser')
