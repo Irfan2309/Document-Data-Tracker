@@ -7,7 +7,8 @@ from plot_reader_time import user_reader_time
 from helper_functions import create_histogram
 from collections import Counter
 from plot_countries import plot_countries, plot_continents
-from also_likes import also_likes
+from also_likes import also_likes, generate_graph
+from task7 import run_gui
 
 def handle_task_2a(data, doc_uuid):
     plot_countries(data, doc_uuid)
@@ -42,8 +43,8 @@ def handle_task_4(data):
     print("=======================================\n\n")
 
 
-def handle_task_5d(data, doc_uuid, visitor_uuid = None, sorting_function=None):
-    likes = also_likes(data, doc_uuid, visitor_uuid = None, sorting_function=None)
+def handle_task_5d(data, doc_uuid, visitor_uuid):
+    likes = also_likes(data, doc_uuid, visitor_uuid, sorting_function=None)
     print("\n\n==============================================")
     print("=   Top 10 Documents also Read by The Visitors   =")
     print("==================================================")
@@ -54,11 +55,13 @@ def handle_task_5d(data, doc_uuid, visitor_uuid = None, sorting_function=None):
     print("==================================================\n\n")
 
 
-def handle_task_6():
+def handle_task_6(data, doc_uuid, visitor_uuid, sorting_function=None):
     print('Task 6')
+    generate_graph(data, doc_uuid, visitor_uuid, sorting_function)
 
-def handle_task_7():
+def handle_task_7(data):
     print('Task 7')
+    run_gui(handle_tasks, data)    
 
 def handle_file(file_name):
     new_file_name = None
@@ -80,7 +83,7 @@ def handle_file(file_name):
         return None
     
 
-def handle_tasks(task_id = None, data = None, user_uuid = None, doc_uuid = None):
+def handle_tasks(task_id = None, data = handle_file('issuu_cw2_train'), visitor_uuid = None, doc_uuid = None):
     if task_id == '2a':
         handle_task_2a(data, doc_uuid)
     elif task_id == '2b':
@@ -92,11 +95,11 @@ def handle_tasks(task_id = None, data = None, user_uuid = None, doc_uuid = None)
     elif task_id == '4':
         handle_task_4(data)
     elif task_id == '5d':
-        handle_task_5d(data, doc_uuid, visitor_uuid = None, sorting_function=None)
+        handle_task_5d(data, doc_uuid, visitor_uuid)
     elif task_id == '6':
-        handle_task_6()
+        handle_task_6(data, doc_uuid, visitor_uuid)
     elif task_id == '7':
-        handle_task_7()
+        handle_task_7(data)
     else:
         print('Invalid Task ID')
 

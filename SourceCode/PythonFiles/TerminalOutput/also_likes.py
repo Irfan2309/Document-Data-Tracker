@@ -38,6 +38,10 @@ def also_likes(data, doc_uuid, visitor_uuid = None, sorting_function=None):
     # Get the list of all unique readers who visited the document
     all_readers = set(get_readers_by_document(data, doc_uuid))
 
+    # If the visitor_uuid is provided, then remove the visitor_uuid to the list of readers
+    if visitor_uuid is not None:
+        all_readers.remove(visitor_uuid)
+
     # Initialize the dictionary to store the documents
     # The dictionary will have the document id as the key and the value will be a dictionary
     # The value dictionary will have two keys: count and readers 
@@ -65,7 +69,7 @@ def also_likes(data, doc_uuid, visitor_uuid = None, sorting_function=None):
     # Return the top 10 documents
     return sorted_docs[:10]
 
-def generate_graph(data, doc_uuid, visitor_uuid = None):
+def generate_graph(data, doc_uuid, visitor_uuid = None, sorting_function=None):
     # Create a Digraph object
     dot = Digraph(comment='Also Likes Graph')
 
@@ -78,9 +82,12 @@ def generate_graph(data, doc_uuid, visitor_uuid = None):
         dot.attr('node', shape='box')
         dot.node(mainVisitorId, mainVisitorId, style='filled', fillcolor='green')
         dot.attr('node', shape='ellipse')
+        dot.edge(mainVisitorId, mainDocId)
 
     # Get the list of "also likes" documents using the also_likes function
-    also_likes_docs = also_likes(data, doc_uuid)
+    if sorting_function is None:
+        sorting_function = lambda x: x[1]['count']
+    also_likes_docs = also_likes(data, doc_uuid, visitor_uuid, sorting_function)
     
     # For each "also likes" document, get the readers and create edges
     for doc, info in also_likes_docs:
