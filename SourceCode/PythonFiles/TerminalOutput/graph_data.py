@@ -5,28 +5,37 @@ import pycountry_convert as pc
 import pandas as pd
 from datetime import datetime
 
-
-# Function to create a histogram
-def create_histogram(data, title, xlabel, ylabel='Number of Views', color='darkblue'):
-    # Create a figure
-    plt.figure(figsize=(10, 6))
-    # Create a bar plot
-    plt.bar(data.keys(), data.values(), color=color)
-    # Add a title and axis labels
-    plt.title(title)
-    # Print x label
-    plt.xlabel(xlabel)
-    # Print y label
-    plt.ylabel(ylabel)
-    # Show the plot
-    plt.show()
-
 # Function to plot countries for each document
 def plot_countries(data):
-    filtered_data = [entry['visitor_country'] for entry in data if 'visitor_country' in entry]
+    filtered_data = []
+    # For every record in data
+    for entry in data:
+        # If visitor_country is present
+        if 'visitor_country' in entry:
+            # Convert country code to full name
+            try:
+                country_name = pc.country_alpha2_to_country_name(entry['visitor_country'])
+            except:
+                country_name = 'Unknown'
+            # Append to filtered_data
+            filtered_data.append(country_name)
+            
     # Count occurrences of each country code
     country_count = Counter(filtered_data)
+    # Return country_count
     return country_count
+
+# Plot for hourly visitors
+def plot_hourly_visitors(data):
+    # ts is the data in epoch
+    ts = [entry['ts'] for entry in data]
+    # Convert to datetime
+    ts = [datetime.fromtimestamp(t) for t in ts]
+    # Convert to string
+    ts = [t.strftime('%H') for t in ts]
+    # Count occurrences of each date
+    hourly_visitors = Counter(ts)
+    return hourly_visitors
 
 # Function to plot count of usrrs on daily basis
 def plot_daily_visitors(data):

@@ -1,4 +1,6 @@
 from graphviz import Digraph
+import tkinter as tk
+from PIL import Image, ImageTk
 
 # Get the list of all the readers who visited the document
 def get_readers_by_document(data, doc_uuid):
@@ -12,6 +14,8 @@ def get_readers_by_document(data, doc_uuid):
         # and if the visitor_uuid is present in the record
         if 'subject_doc_id' in record and  record['subject_doc_id'] == doc_uuid and 'visitor_uuid' in record:
             all_readers.append(record['visitor_uuid'])
+    
+    # Return the list of readers
     return all_readers
 
 # Get the list of all the documents read by the visitor
@@ -48,9 +52,7 @@ def also_likes(data, doc_uuid, visitor_uuid = None, sorting_function=None):
     # count will store the number of readers who read the document 
     # readers will store the list of all the readers who read the document
     liked_documents = {}
-    
     for reader in all_readers:
-            
             # Get the list of all the documents read by the reader
             documents = set(get_document_by_readers(data, reader))
             for doc in documents:
@@ -91,13 +93,10 @@ def generate_graph(data, doc_uuid, visitor_uuid = None, sorting_function=None):
     
     # For each "also likes" document, get the readers and create edges
     for doc, info in also_likes_docs:
-
         docId = doc[-4:]
         # Add the document node
         dot.node(docId, docId)
-
         readers = info['readers']
-
         for reader in readers:
             readerId = reader[-4:]
             # Add the reader node
@@ -106,9 +105,10 @@ def generate_graph(data, doc_uuid, visitor_uuid = None, sorting_function=None):
             dot.attr('node', shape='ellipse')
             # Add an edge from reader to the document
             dot.edge(readerId, docId)
-
     # Generate and save the graph
     print(dot.source) 
     dot.render('also_likes_graph', format='png', cleanup=True)
-
+    # Return the graph
+    return dot
+    
 
