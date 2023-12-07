@@ -77,7 +77,7 @@ def all_cards(parent,data):
 
 def all_charts(parent, data):
     # Heading for the charts
-    heading_label = tk.Label(scrollable_frame, text="Graph Analysis", font=("Arial", 20, "bold", "italic"), fg="white")
+    heading_label = tk.Label(parent, text="Graph Analysis", font=("Arial", 20, "bold", "italic"), fg="white")
     heading_label.pack(fill="x", pady=5)
 
     # Generate some random data for the charts
@@ -125,7 +125,7 @@ def place_tables(parent,data):
 
 
 
-def full_gui():
+def full_gui(data):
     # Initialize main window for the dashboard
     root = tk.Tk()
     root.title("Admin Panel Dashboard")
@@ -146,14 +146,7 @@ def full_gui():
     # Add a frame inside the canvas
     scrollable_frame = ttk.Frame(canvas)
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    scrollable_frame.bind("<Configure>", on_frame_configure(canvas=canvas))
-    data = []
-    try:
-        with open('../../../Dataset/sample_600k_lines.json') as f:
-            data = f.readlines()
-        data = [json.loads(x.strip()) for x in data]
-    except Exception as e:
-        print('Error: ', e)
+    scrollable_frame.bind("<Configure>", on_frame_configure(None,canvas=canvas))
 
     # Heading for the charts
     heading_label = tk.Label(scrollable_frame, text="Admin Dashboard", font=("Arial", 22, "bold", "italic"), fg="white")
@@ -172,9 +165,6 @@ def full_gui():
     place_tables(tables_frame,data)
 
     # Run the application
-    root.mainloop()
+    # root.mainloop()
 
-
-
-full_gui()
 
