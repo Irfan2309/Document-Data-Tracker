@@ -28,7 +28,7 @@ def average_reading_time_per_document(data):
     average_time = {doc: total_time[doc] / counts[doc] for doc in total_time}
     # Convert miliseconds to minutes
     try :
-        return round(round(sum(average_time.values()) / len(average_time), 2) / 60000, 2)
+        return round(round(sum(average_time.values()) / len(average_time), 2) / 1000, 2)
     except:
         return 0
 

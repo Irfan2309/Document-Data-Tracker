@@ -5,8 +5,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 from card_num import get_unique_visitors_count, get_unique_documents_count, average_reading_time_per_document, total_visits_count
 from graph_data import plot_countries
+from graph_data import plot_daily_visitors
 import json
 import mplcursors
+from table_data import process_reading_data, process_document_data
 
 # Initialize main window for the dashboard
 root = tk.Tk()
@@ -89,7 +91,7 @@ def all_cards(parent,data):
     card2 = create_card(top_frame, "Unique Documents", "{:,}".format(unique_documents), "lightgreen")
     card2.pack(side="left", fill="both", expand=True, padx=5)
 
-    card3 = create_card(top_frame, "Average Reading Time", str(average_time)+" Mins", "lightcoral")
+    card3 = create_card(top_frame, "Average Reading Time", str(average_time)+" Secs", "lightcoral")
     card3.pack(side="left", fill="both", expand=True, padx=5)
 
     card4 = create_card(top_frame, "Total Visits", "{:,}".format(total_visits), "lightgrey")
@@ -110,10 +112,14 @@ def all_charts(parent, data):
     # Create the charts
     counter = plot_countries(data)
     create_matplotlib_chart(middle_frame, "Chart 1", counter.keys(), counter.values())
-    create_matplotlib_chart(middle_frame, "Chart 2", x, y)
+    
+    daily_visitors = plot_daily_visitors(data)
+    create_matplotlib_chart(middle_frame, "Chart 2", daily_visitors.keys(), daily_visitors.values())
+
+    # create_matplotlib_chart(middle_frame, "Chart 2", x, y)
 
 # Function to create a table with three columns
-def create_table(parent, title, column_names):
+def create_table(parent, title, column_names, content):
     table_frame = tk.Frame(parent)
     tk.Label(table_frame, text=title, font=("Arial", 14)).pack()
     
@@ -122,31 +128,29 @@ def create_table(parent, title, column_names):
         tree.heading(col, text=col)
         tree.column(col, anchor="center")
     
-    # Dummy data for illustration
-    dummy_data = [("Data1", "Data2", "Data3") for _ in range(5)]
-    for item in dummy_data:
+    # Print content
+    for item in content[:20]:
         tree.insert('', 'end', values=item)
-    
     tree.pack(expand=True, fill='both')
     return table_frame
 
 # Function to place two tables side by side
-def place_tables(parent):
+def place_tables(parent,data):
     # Left table
-    table1 = create_table(parent, "Table 1", ('Column 1', 'Column 2', 'Column 3'))
+    result = process_reading_data(data)
+    table1 = create_table(parent, "Top Readers", ('User ID', 'Documents Read', 'Average Time Spent (secs)'), result)
     table1.pack(side="left", expand=True, fill="both", padx=(0, 5), pady=5)
     
+    result2 = process_document_data(data)
     # Right table
-    table2 = create_table(parent, "Table 2", ('Column 1', 'Column 2', 'Column 3'))
-    table2.pack(side="left", expand=True, fill="both", padx=(5, 0), pady=5)
+    table2 = create_table(parent, "Top Readers", ('Document ID', 'Users Read', 'Average Time Spent'), result2)
+    table2.pack(side="left", expand=True, fill="both", padx=(0, 5), pady=5)
 
 data = []
 try:
-    with open('Dataset/build_dataset.txt') as f:
+    with open('../../../Dataset/sample_600k_lines.json') as f:
         data = f.readlines()
     data = [json.loads(x.strip()) for x in data]
-    #print top 10 vals 
-    print(data[0])
 except Exception as e:
     print('Error: ', e)
 
@@ -164,7 +168,7 @@ tables_frame = tk.Frame(scrollable_frame)
 tables_frame.pack(fill="x")
 
 # Call the function to place two tables
-place_tables(tables_frame)
+place_tables(tables_frame,data)
 
 # Run the application
 root.mainloop()
