@@ -10,32 +10,9 @@ import json
 import mplcursors
 from table_data import process_reading_data, process_document_data
 
-# Initialize main window for the dashboard
-root = tk.Tk()
-root.title("Admin Panel Dashboard")
-root.geometry("1230x800")
-root.configure(bg="black")
-
-# Create a canvas and a scrollbar
-canvas = tk.Canvas(root, bg="black")
-scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
-
-# Configure the canvas
-canvas.configure(yscrollcommand=scrollbar.set)
-
-# Pack the scrollbar to the right side, fill Y axis. Pack the canvas to fill the rest
-scrollbar.pack(side="right", fill="y")
-canvas.pack(side="left", fill="both", expand=True)
-
-# Add a frame inside the canvas
-scrollable_frame = ttk.Frame(canvas)
-canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-
-def on_frame_configure(event):
+def on_frame_configure(event, canvas):
     '''Reset the scroll region to encompass the inner frame'''
     canvas.configure(scrollregion=canvas.bbox("all"))
-
-scrollable_frame.bind("<Configure>", on_frame_configure)
 
 # Function to create a card-like frame
 def create_card(parent, title, value, bg_color):
@@ -112,7 +89,7 @@ def all_charts(parent, data):
     # Create the charts
     counter = plot_countries(data)
     create_matplotlib_chart(middle_frame, "Chart 1", counter.keys(), counter.values())
-    
+
     daily_visitors = plot_daily_visitors(data)
     create_matplotlib_chart(middle_frame, "Chart 2", daily_visitors.keys(), daily_visitors.values())
 
@@ -146,32 +123,58 @@ def place_tables(parent,data):
     table2 = create_table(parent, "Top Readers", ('Document ID', 'Users Read', 'Average Time Spent'), result2)
     table2.pack(side="left", expand=True, fill="both", padx=(0, 5), pady=5)
 
-data = []
-try:
-    with open('../../../Dataset/sample_600k_lines.json') as f:
-        data = f.readlines()
-    data = [json.loads(x.strip()) for x in data]
-except Exception as e:
-    print('Error: ', e)
-
-# Heading for the charts
-heading_label = tk.Label(scrollable_frame, text="Admin Dashboard", font=("Arial", 22, "bold", "italic"), fg="white")
-heading_label.pack(fill="x", pady=10)
-
-# Add all the components to the scrollable_frame
-all_cards(scrollable_frame, data)
-
-all_charts(scrollable_frame, data)
-
-# Create a frame for the tables and add it to the scrollable_frame
-tables_frame = tk.Frame(scrollable_frame)
-tables_frame.pack(fill="x")
-
-# Call the function to place two tables
-place_tables(tables_frame,data)
-
-# Run the application
-root.mainloop()
 
 
+def full_gui():
+    # Initialize main window for the dashboard
+    root = tk.Tk()
+    root.title("Admin Panel Dashboard")
+    root.geometry("1230x800")
+    root.configure(bg="black")
+
+    # Create a canvas and a scrollbar
+    canvas = tk.Canvas(root, bg="black")
+    scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
+
+    # Configure the canvas
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    # Pack the scrollbar to the right side, fill Y axis. Pack the canvas to fill the rest
+    scrollbar.pack(side="right", fill="y")
+    canvas.pack(side="left", fill="both", expand=True)
+
+    # Add a frame inside the canvas
+    scrollable_frame = ttk.Frame(canvas)
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    scrollable_frame.bind("<Configure>", on_frame_configure(canvas=canvas))
+    data = []
+    try:
+        with open('../../../Dataset/sample_600k_lines.json') as f:
+            data = f.readlines()
+        data = [json.loads(x.strip()) for x in data]
+    except Exception as e:
+        print('Error: ', e)
+
+    # Heading for the charts
+    heading_label = tk.Label(scrollable_frame, text="Admin Dashboard", font=("Arial", 22, "bold", "italic"), fg="white")
+    heading_label.pack(fill="x", pady=10)
+
+    # Add all the components to the scrollable_frame
+    all_cards(scrollable_frame, data)
+
+    all_charts(scrollable_frame, data)
+
+    # Create a frame for the tables and add it to the scrollable_frame
+    tables_frame = tk.Frame(scrollable_frame)
+    tables_frame.pack(fill="x")
+
+    # Call the function to place two tables
+    place_tables(tables_frame,data)
+
+    # Run the application
+    root.mainloop()
+
+
+
+full_gui()
 
